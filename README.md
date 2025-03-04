@@ -1,7 +1,3 @@
->>>>>>> branch-name
-# pacman_clone
-Clone do clássico jogo Pacman desenvolvido em Python com a biblioteca Pygame. Projeto modular e open source para aprendizado e contribuições.
-=======
 # Pacman Clone
 
 This is a clone of the classic **Pacman** game, developed in Python using the **Pygame** library. The project is organized in a modular way by dividing the game logic into several scripts to simplify maintenance and future enhancements.
