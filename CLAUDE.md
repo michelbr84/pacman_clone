@@ -11,13 +11,16 @@ python main.py
 
 Run from the repo root — `scripts/config.py` loads assets with relative paths (`images/pacman.png`, `pacman.mp3`, `freesansbold.ttf`) at import time, so running from another directory crashes before `main.py` executes.
 
-There is no build step, linter config, or test suite.
+Tests live in `tests/` and are run with:
+```bash
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python -m pytest tests/ -q
+```
 
 ## Architecture
 
-Single-process Pygame loop. Entry point is `main.py::startGame`, which owns the game state and is called recursively via `doNext` to restart after win/lose.
+Single-process Pygame loop driven by a stack-based state machine. Entry point is `main.py` → `scripts/app.py::run`, which calls `pygame.init()`, then `config.init_assets()`, then dispatches to one handler per `GameState` (`MENU`, `PLAYING`, `PAUSED`, `GAME_OVER`, `WIN`, `SETTINGS`, `HIGHSCORES`, `CREDITS`). Each state lives in `scripts/states/<name>_state.py` and exposes a `run(screen, clock, sm)` function. Transitions use `sm.transition(new)` (replace) or `sm.push/pop` (overlay — used by pause). The old `startGame`/`doNext` recursion is gone.
 
-**Import-time side effects in `scripts/config.py`**: importing config triggers `pygame.image.load`, `pygame.mixer.init`, music playback, and font loading. This means `pygame.init()` in `main.py` must run *before* any `from scripts.config import ...` — reordering imports will break startup. Keep this constraint in mind when refactoring.
+**Lazy asset init in `scripts/config.py`**: module-level colors and dimensions import safely; images/music/font load inside `config.init_assets()`, which must be called by the entrypoint *after* `pygame.init()`. `scripts/app.py::run` already does this. The old "import-order is load-bearing or startup crashes" quirk is replaced by a clean contract: `pygame.init()` → `config.init_assets()` → everything else.
 
 **Sprite hierarchy**: `Ghost(Player)` inherits from `Player` but overrides `changespeed` with a completely different signature — `Player.changespeed(dx, dy)` takes deltas from keyboard events, while `Ghost.changespeed(direction_list, ghost, turn, steps, max_turn)` advances through a scripted path. They are not interchangeable; don't treat `Ghost` as a drop-in `Player`.
 
