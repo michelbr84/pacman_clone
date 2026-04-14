@@ -11,6 +11,7 @@ from scripts import persistence
 
 SFX_DIR = "assets/sfx"
 SFX_NAMES = ["chomp", "power", "death", "eat_ghost", "menu_move", "menu_select"]
+SFX_EXTS = (".mp3", ".wav", ".ogg")  # first match wins
 
 _sounds = {}
 _loaded = False
@@ -21,14 +22,15 @@ def load():
     if _loaded:
         return
     for name in SFX_NAMES:
-        path = os.path.join(SFX_DIR, f"{name}.wav")
-        if os.path.exists(path):
-            try:
-                _sounds[name] = pygame.mixer.Sound(path)
-            except pygame.error:
-                _sounds[name] = None
-        else:
-            _sounds[name] = None
+        _sounds[name] = None
+        for ext in SFX_EXTS:
+            path = os.path.join(SFX_DIR, f"{name}{ext}")
+            if os.path.exists(path):
+                try:
+                    _sounds[name] = pygame.mixer.Sound(path)
+                except pygame.error:
+                    _sounds[name] = None
+                break
     _loaded = True
     apply_volumes()
 

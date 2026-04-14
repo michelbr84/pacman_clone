@@ -13,7 +13,7 @@ A Pygame-based Pac-Man clone upgraded with a full menu system, state machine, po
 - **Difficulty speed scaling** — Easy = 0.8×, Normal = 1.0×, Hard = 1.3× ghost speed.
 - **Chomp animation** — Pacman's mouth opens/closes while moving; the last facing direction is preserved when idle (previously snapped back to facing right).
 - **Particles** — Tiny bursts on pellet eat and power-up pickup.
-- **Audio** — Drop `.wav` files into `assets/sfx/` (see `docs/assets-todo.md`). Missing files are gracefully skipped.
+- **Audio** — `.mp3` / `.wav` / `.ogg` SFX in `assets/sfx/` (shipped as MP3). See `docs/assets-todo.md`. Missing files are gracefully skipped.
 
 ## Requirements
 

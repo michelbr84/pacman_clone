@@ -1,16 +1,16 @@
-# Assets TODO
+# Audio assets
 
-Drop real WAV files into `assets/sfx/` with these exact names:
+SFX files live in `assets/sfx/`. Supported formats (first match wins per name): `.mp3`, `.wav`, `.ogg`.
 
-- chomp.wav       — pellet eat (fires every tick while munching)
-- power.wav       — power pellet pickup
-- death.wav       — Pacman dies
-- eat_ghost.wav   — Pacman eats a frightened ghost
-- menu_move.wav   — menu navigation (reserved)
-- menu_select.wav — menu confirmation (reserved)
+Required filenames:
 
-Missing files are handled gracefully: `scripts/audio.py::load` skips any that
-are absent, so the game runs silently until assets are provided.
+- `chomp`       — pellet eat (fires every tick while munching)
+- `power`       — power pellet pickup
+- `death`       — Pacman dies
+- `eat_ghost`   — Pacman eats a frightened ghost
+- `menu_move`   — menu navigation (reserved)
+- `menu_select` — menu confirmation (reserved)
 
-Volumes are controlled by the in-game Settings screen (persisted to
-`savegame/settings.json`).
+Currently shipped as `.mp3`. Missing files are handled gracefully — `scripts/audio.py::load` skips any that are absent, so the game runs silently for that channel.
+
+Volumes are controlled by the in-game Settings screen (persisted to `savegame/settings.json`).
