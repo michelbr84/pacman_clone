@@ -14,24 +14,32 @@ YELLOW  = (255, 255, 0)
 SCREEN_WIDTH  = 606
 SCREEN_HEIGHT = 606
 
-# Caminhos para os arquivos de imagem, som e fonte
 ICON_PATH   = 'images/pacman.png'
 MUSIC_PATH  = 'pacman.mp3'
 FONT_PATH   = "freesansbold.ttf"
 FONT_SIZE   = 24
 
-# OBS.: É importante que o pygame seja inicializado (pygame.init()) antes de carregar imagens e sons.
-# Se a inicialização ocorrer no main.py, certifique-se de importar este módulo após a chamada a pygame.init().
+# Lazy-loaded assets — populated by init_assets() after pygame.init().
+FONT = None
+TROLLICON = None
+_initialized = False
 
-# Carrega o ícone do jogo e define-o como ícone da janela
-TROLLICON = pygame.image.load(ICON_PATH)
-pygame.display.set_icon(TROLLICON)
 
-# Inicializa o mixer e carrega a música de fundo, fazendo-a tocar em loop
-pygame.mixer.init()
-pygame.mixer.music.load(MUSIC_PATH)
-pygame.mixer.music.play(-1, 0.0)
+def init_assets():
+    """Load icon, music and font. Idempotent. Must be called after pygame.init()."""
+    global _initialized, FONT, TROLLICON
+    if _initialized:
+        return
+    TROLLICON = pygame.image.load(ICON_PATH)
+    pygame.display.set_icon(TROLLICON)
 
-# Inicializa a fonte padrão para o jogo
-pygame.font.init()
-FONT = pygame.font.Font(FONT_PATH, FONT_SIZE)
+    pygame.mixer.init()
+    try:
+        pygame.mixer.music.load(MUSIC_PATH)
+        pygame.mixer.music.play(-1, 0.0)
+    except pygame.error:
+        pass  # music is non-essential
+
+    pygame.font.init()
+    FONT = pygame.font.Font(FONT_PATH, FONT_SIZE)
+    _initialized = True

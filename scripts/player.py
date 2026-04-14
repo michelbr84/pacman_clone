@@ -21,6 +21,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.left = x
         self.prev_x = x
         self.prev_y = y
+        self.last_angle = 0  # 0=right, 180=left, 90=up, -90=down
 
     def prevdirection(self):
         """
@@ -64,18 +65,15 @@ class Player(pygame.sprite.Sprite):
             self.rect.left = old_x
             self.rect.top = old_y
 
-        # Atualiza a rotação da imagem conforme a direção do movimento
-        # Prioriza movimento horizontal; caso não haja, usa vertical
+        # Update facing based on movement; when idle, keep the last angle so
+        # Pacman does not snap back to facing right.
         if self.change_x > 0:
-            angle = 0
+            self.last_angle = 0
         elif self.change_x < 0:
-            angle = 180
+            self.last_angle = 180
         elif self.change_y < 0:
-            angle = 90
+            self.last_angle = 90
         elif self.change_y > 0:
-            angle = -90
-        else:
-            angle = 0  # Sem movimento, mantém a rotação atual
-
-        # Rotaciona a imagem com base no ângulo calculado
-        self.image = pygame.transform.rotate(self.original_image, angle)
+            self.last_angle = -90
+        # else: no movement — preserve self.last_angle
+        self.image = pygame.transform.rotate(self.original_image, self.last_angle)
