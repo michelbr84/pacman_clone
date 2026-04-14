@@ -11,6 +11,9 @@ def run():
     pygame.display.set_caption("Pac-Man — AAA Edition")
     config.init_assets()
 
+    from scripts import audio
+    audio.load()
+
     clock = pygame.time.Clock()
     sm = StateManager(initial=GameState.MENU)
 

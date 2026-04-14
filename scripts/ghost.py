@@ -7,6 +7,31 @@ class Ghost(Player):
     Representa um fantasma no jogo, herdando as propriedades e métodos de Player.
     Implementa a lógica de movimentação baseada em uma lista de direções.
     """
+
+    def __init__(self, x, y, filename):
+        super().__init__(x, y, filename)
+        self.frightened = False
+        self.frightened_until = 0  # pygame ticks ms
+
+    def set_frightened(self, duration_ms, now_ms):
+        self.frightened = True
+        self.frightened_until = now_ms + duration_ms
+        # Tint blue.
+        tinted = self.original_image.copy()
+        tinted.fill((0, 0, 180), special_flags=pygame.BLEND_RGBA_MULT)
+        self.image = tinted
+
+    def update_frightened(self, now_ms):
+        if self.frightened and now_ms >= self.frightened_until:
+            self.frightened = False
+            self.image = self.original_image
+
+    def reset_to(self, x, y):
+        self.rect.left = x
+        self.rect.top = y
+        self.frightened = False
+        self.image = self.original_image
+
     def changespeed(self, direction_list, ghost, turn, steps, max_turn):
         """
         Atualiza a velocidade do fantasma com base na direção atual da lista.

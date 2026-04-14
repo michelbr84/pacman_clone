@@ -36,6 +36,8 @@ def run(screen, clock, sm):
 
     def back():
         persistence.save_settings(settings)
+        from scripts import audio as _audio
+        _audio.apply_volumes()
         sm.transition(GameState.MENU)
 
     cx = config.SCREEN_WIDTH // 2
